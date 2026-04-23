@@ -1,0 +1,53 @@
+{% extends "core/base.html" %}
+{% block title %}Explorar — GlobalEd{% endblock %}
+{% block extra_style %}
+{% load static %}
+
+<style>
+.exp-hero { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); border-radius: var(--radius-lg); color: var(--white); padding: 2.25rem 2rem; margin-bottom: 1.5rem; }
+.exp-hero h2 { font-size: 22px; font-weight: 700; margin-bottom: .4rem; }
+.exp-hero p  { font-size: 13px; opacity: .85; max-width: 560px; line-height: 1.7; }
+.exp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px,100%), 1fr)); gap: 1.1rem; }
+.exp-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 1.4rem; display: flex; flex-direction: column; }
+.exp-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--blue-light); display: flex; align-items: center; justify-content: center; margin-bottom: .9rem; }
+.exp-icon svg { width: 24px; height: 24px; fill: var(--blue); }
+.exp-card h4 { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: .4rem; }
+.exp-card p  { font-size: 13px; color: var(--text-muted); line-height: 1.65; flex: 1; }
+.quote-box { background: var(--bg-soft); border-left: 4px solid var(--green); border-radius: 0 var(--radius-md) var(--radius-md) 0; padding: 1.1rem 1.4rem; margin: 1.5rem 0; font-size: 14px; font-style: italic; color: var(--text); line-height: 1.7; }
+.quote-box cite { display: block; font-size: 12px; color: var(--text-muted); font-style: normal; margin-top: .4rem; }
+</style>
+{% endblock %}
+{% block navbar %}
+<nav class="navbar">
+  <div class="logo"><img src="{% static 'images/logo.jpeg' %}" alt="GlobalEd icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">GlobalEd</div>
+  <div class="nav-links">
+    <a href="{% url 'competencias:lista' %}" class="nav-link btn-competencias" style="color: var(--blue); font-size: 20px;">Competencias</a>
+    <a href="{% url 'explorar' %}" class="nav-link active" style="font-size: 20px;">Explorar</a>
+    <a href="{% url 'tests' %}"    class="nav-link" style="font-size: 20px;">Tests</a>
+    <a href="{% url 'dashboard' %}" class="nav-link" style="font-size: 20px;">Inicio</a>
+  </div>
+  <div class="nav-avatar" tabindex="0">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    <div class="dropdown"><a href="{% url 'dashboard' %}">👤 {{ request.user.username }}</a><hr style="border:none;border-top:1px solid #D8ECD8;margin:4px 0;"><a href="{% url 'logout' %}" class="danger">Cerrar sesión</a></div>
+  </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="page-main">
+  <div class="exp-hero">
+    <h2>📚 ¿Qué es la Educación de Calidad?</h2>
+    <p>Educación para todos, sin importar su origen ni condición. El ODS 4 garantiza que cada persona acceda a una educación inclusiva, equitativa y de calidad.</p>
+  </div>
+  <div class="quote-box">"La educación es la base para el desarrollo sostenible y para construir un mundo más justo."<cite>— UNESCO, Agenda 2030</cite></div>
+  <div class="exp-grid">
+    <div class="exp-card"><div class="exp-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div><h4>¿Por qué es importante?</h4><p>La educación beneficia toda la sociedad: reduce la pobreza, mejora la salud, impulsa la economía, fortalece el medioambiente y reduce las desigualdades.</p></div>
+    <div class="exp-card"><div class="exp-icon"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div><h4>Para todos sin excepción</h4><p>Ninguna persona debe quedarse fuera del sistema educativo por razones de género, discapacidad, situación económica o ubicación geográfica.</p></div>
+    <div class="exp-card"><div class="exp-icon"><svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg></div><h4>Aprendizaje permanente</h4><p>El ODS 4 promueve oportunidades de aprendizaje a lo largo de toda la vida, desde la primera infancia hasta la adultez y el mundo laboral.</p></div>
+    <div class="exp-card"><div class="exp-icon"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div><h4>Entornos seguros e inclusivos</h4><p>Todas las personas merecen estudiar en entornos libres de violencia, con docentes capacitados que potencien su desarrollo integral.</p></div>
+  </div>
+  <div style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+    <a href="{% url 'metas' %}" class="btn btn-primary" style="max-width:240px;">Ver metas del ODS 4</a>
+    <a href="{% url 'tests' %}" class="btn btn-secondary" style="max-width:240px;">Ir a los tests</a>
+  </div>
+</div>
+{% endblock %}

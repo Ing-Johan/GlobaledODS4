@@ -1,0 +1,60 @@
+{% extends "competencias/base_comp.html" %}
+{% block title %}{{ comp.nombre }} — Niveles{% endblock %}
+{% block nav_comp %}active{% endblock %}
+
+{% block comp_style %}
+<style>
+.niveles-hero { padding:1.75rem 2rem; border-radius:var(--comp-radius); color:#fff; margin-bottom:1.75rem; }
+.nivel-card { display:flex; align-items:center; gap:1rem; background:#fff; border-radius:var(--comp-radius); box-shadow:0 2px 12px rgba(0,0,0,.07); padding:1.2rem 1.4rem; margin-bottom:1rem; border-left:5px solid transparent; transition:transform .15s; }
+.nivel-card:hover { transform:translateX(4px); }
+.nivel-num { width:48px; height:48px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:700; color:#fff; flex-shrink:0; }
+.nivel-info { flex:1; min-width:0; }
+.nivel-titulo { font-size:15px; font-weight:700; color:var(--text); margin-bottom:2px; }
+.nivel-desc   { font-size:12px; color:var(--text-muted); }
+.nivel-estado { text-align:right; flex-shrink:0; }
+.estado-ok   { font-size:11px; font-weight:700; color:#2E7D32; background:#E8F5E9; padding:4px 10px; border-radius:20px; }
+.estado-no   { font-size:11px; color:var(--text-muted); background:var(--bg-soft); padding:4px 10px; border-radius:20px; }
+.estado-pct  { font-size:12px; font-weight:700; display:block; margin-top:4px; }
+</style>
+{% endblock %}
+
+{% block comp_content %}
+<div class="breadcrumb" style="font-size: large;">
+  <a href="{% url 'competencias:lista' %}">Competencias</a>
+  <span>›</span>
+  <span>{{ comp.nombre }}</span>
+</div>
+
+<div class="niveles-hero" style="background:linear-gradient(135deg,{{ comp.color }} 0%,#0D47A1 100%);">
+  <div style="font-size:38px;margin-bottom:.5rem;">{{ comp.icono }}</div>
+  <h2 style="font-size:22px;font-weight:700;margin-bottom:.3rem;">{{ comp.nombre }}</h2>
+  <p style="font-size:13px;opacity:.85;">{{ comp.descripcion }}</p>
+</div>
+
+{% for item in niveles_data %}
+{% with niv=item.nivel res=item.resultado %}
+<a href="{% url 'competencias:contenido' comp.slug niv.numero %}" style="text-decoration:none;">
+  <div class="nivel-card" style="border-left-color:{{ comp.color }};">
+    <div class="nivel-num" style="background:{{ comp.color }};">{{ niv.numero }}</div>
+    <div class="nivel-info">
+      <div class="nivel-titulo">{{ niv.titulo }}</div>
+      <div class="nivel-desc">
+        <span class="badge-dif dif-{{ niv.numero }}">{{ niv.etiqueta_dificultad }}</span>
+        &nbsp;{{ niv.descripcion }}
+      </div>
+    </div>
+    <div class="nivel-estado">
+      {% if res and res.completado %}
+        <span class="estado-ok">✓ Completado</span>
+        <span class="estado-pct" style="color:{% if res.aprobado %}#2E7D32{% else %}#E65100{% endif %};">
+          {{ res.correctas }}/{{ res.total }} · {{ res.porcentaje }}%
+        </span>
+      {% else %}
+        <span class="estado-no">Pendiente</span>
+      {% endif %}
+    </div>
+  </div>
+</a>
+{% endwith %}
+{% endfor %}
+{% endblock %}

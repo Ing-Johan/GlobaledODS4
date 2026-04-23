@@ -1,0 +1,75 @@
+{% extends "competencias/base_comp.html" %}
+{% block title %}{{ leccion.titulo }} — GlobalEd{% endblock %}
+{% block nav_comp %}active{% endblock %}
+
+{% block comp_style %}
+<style>
+.leccion-wrap { max-width:700px; margin:0 auto; }
+.leccion-header { background:linear-gradient(135deg,{{ comp.color }} 0%,#0D47A1 100%); border-radius:var(--comp-radius); color:#fff; padding:2rem; margin-bottom:1.75rem; }
+.leccion-header h1 { font-size:20px; font-weight:700; margin-bottom:.3rem; }
+.leccion-body { background:#fff; border-radius:var(--comp-radius); box-shadow:var(--comp-shadow); padding:2rem; margin-bottom:1.25rem; font-size:15px; line-height:1.8; color:var(--text); }
+.leccion-body p { margin-bottom:1rem; }
+.ejemplo-box { background:var(--bg-soft); border-left:4px solid #81C784; border-radius:0 var(--radius-md) var(--radius-md) 0; padding:1.1rem 1.4rem; margin:1.25rem 0; font-size:14px; line-height:1.7; }
+.ejemplo-box strong { color:var(--blue); }
+.tip-box { background:#FFF8E1; border-radius:var(--radius-md); padding:1rem 1.25rem; margin-top:1.25rem; font-size:14px; color:#5D4037; display:flex; gap:.75rem; align-items:flex-start; }
+.tip-icon { font-size:22px; flex-shrink:0; }
+.cta-row { display:flex; gap:1rem; flex-wrap:wrap; margin-top:2rem; }
+</style>
+{% endblock %}
+
+{% block comp_content %}
+<div class="leccion-wrap">
+  <div class="breadcrumb" style="font-size: large;">
+    <a href="{% url 'competencias:lista' %}">Competencias</a>
+    <span>›</span>
+    <a href="{% url 'competencias:niveles' comp.slug %}">{{ comp.nombre }}</a>
+    <span>›</span>
+    <span>Nivel {{ nivel.numero }}</span>
+  </div>
+
+  <div class="leccion-header">
+    <div style="font-size:13px;opacity:.8;margin-bottom:.5rem;">
+      {{ comp.icono }} {{ comp.nombre }} &nbsp;·&nbsp;
+      <span class="badge-dif dif-{{ nivel.numero }}">{{ nivel.etiqueta_dificultad }}</span>
+    </div>
+    <h1>{{ leccion.titulo }}</h1>
+    <p style="font-size:13px;opacity:.85;margin-top:.3rem;">{{ nivel.descripcion }}</p>
+  </div>
+
+  <div class="leccion-body">
+    {% for parrafo in lineas %}
+      {% if parrafo.strip %}<p>{{ parrafo }}</p>{% endif %}
+    {% endfor %}
+
+    {% if leccion.ejemplo %}
+    <div class="ejemplo-box">
+      <strong>📝 Ejemplo:</strong><br>
+      {{ leccion.ejemplo }}
+    </div>
+    {% endif %}
+
+    {% if leccion.tip %}
+    <div class="tip-box">
+      <span class="tip-icon">💡</span>
+      <span>{{ leccion.tip }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="cta-row">
+    <a href="{% url 'competencias:quiz' comp.slug nivel.numero %}" class="btn-kid btn-kid-green">
+      ¡Empezar el quiz! →
+    </a>
+    <a href="{% url 'competencias:niveles' comp.slug %}" class="btn-kid btn-kid-outline">
+      Volver a niveles
+    </a>
+  </div>
+
+  {% if resultado and resultado.completado %}
+  <p style="margin-top:1rem;font-size:13px;color:var(--text-muted);">
+    Ya completaste este nivel con <strong>{{ resultado.correctas }}/{{ resultado.total }}</strong> correctas.
+    Puedes repetirlo para mejorar tu puntaje.
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

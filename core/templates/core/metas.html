@@ -1,0 +1,56 @@
+{% extends "core/base.html" %}
+{% block title %}Metas ODS 4 — GlobalEd{% endblock %}
+{% block extra_style %}
+{% load static %}
+
+<style>
+.metas-hero { background: linear-gradient(135deg, #2E7D32 0%, var(--green-dark) 100%); border-radius: var(--radius-lg); color: var(--white); padding: 2.25rem 2rem; margin-bottom: 1.75rem; }
+.metas-hero h2 { font-size: 22px; font-weight: 700; margin-bottom: .4rem; }
+.metas-hero p  { font-size: 13px; opacity: .85; max-width: 540px; line-height: 1.7; }
+.meta-list { display: flex; flex-direction: column; gap: 1rem; }
+.meta-item { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 1.2rem 1.4rem; display: flex; gap: 1rem; align-items: flex-start; }
+.meta-num { min-width: 46px; height: 46px; border-radius: 50%; background: var(--blue); color: var(--white); font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.meta-content h4 { font-size: 14px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+.meta-content p  { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.meta-tag { display: inline-block; margin-top: 6px; background: var(--blue-light); color: var(--blue); font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 20px; letter-spacing: .04em; }
+</style>
+{% endblock %}
+{% block navbar %}
+<nav class="navbar">
+  <div class="logo"><img src="{% static 'images/logo.jpeg' %}" alt="GlobalEd icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">GlobalEd</div>
+  <div class="nav-links">
+    <a href="{% url 'competencias:lista' %}" class="nav-link btn-competencias" style="color: var(--blue); font-size: 20px;">Competencias</a>
+    <a href="{% url 'explorar' %}" class="nav-link active" style="font-size: 20px;">Explorar</a>
+    <a href="{% url 'tests' %}"    class="nav-link" style="font-size: 20px;">Tests</a>
+    <a href="{% url 'dashboard' %}" class="nav-link" style="font-size: 20px;">Inicio</a>
+  </div>
+  <div class="nav-avatar" tabindex="0">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    <div class="dropdown"><a href="{% url 'dashboard' %}">👤 {{ request.user.username }}</a><hr style="border:none;border-top:1px solid #D8ECD8;margin:4px 0;"><a href="{% url 'logout' %}" class="danger">Cerrar sesión</a></div>
+  </div>
+</nav>
+{% endblock %}
+{% block content %}
+<div class="page-main">
+  <div class="metas-hero">
+    <h2>🎯 Metas del ODS 4 — Agenda 2030</h2>
+    <p>El ODS 4 tiene 10 metas que guían a los países hacia una educación universal, inclusiva y de calidad para el año 2030.</p>
+  </div>
+  <div class="meta-list">
+    {% for m in metas %}
+    <div class="meta-item">
+      <div class="meta-num">{{ m.num }}</div>
+      <div class="meta-content">
+        <h4>{{ m.titulo }}</h4>
+        <p>{{ m.desc }}</p>
+        <span class="meta-tag">{{ m.categoria }}</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div style="margin-top:2rem;display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center;">
+    <a href="{% url 'tests' %}" class="btn btn-primary" style="max-width:240px;">Ir a los tests</a>
+    <a href="{% url 'explorar' %}" class="btn btn-outline" style="max-width:240px;">Volver a Explorar</a>
+  </div>
+</div>
+{% endblock %}

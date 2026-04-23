@@ -1,0 +1,87 @@
+{% extends "competencias/base_comp.html" %}
+{% block title %}Resultado — {{ nivel }} — GlobalEd{% endblock %}
+{% block nav_comp %}active{% endblock %}
+
+{% block comp_style %}
+<style>
+.res-wrap   { max-width:700px; margin:0 auto; }
+.res-banner { border-radius:var(--comp-radius); padding:2rem; margin-bottom:1.75rem; text-align:center; color:#fff; }
+.res-banner.aprobado { background:linear-gradient(135deg,#2E7D32 0%,#4CAF50 100%); }
+.res-banner.repaso   { background:linear-gradient(135deg,#E65100 0%,#FF8F00 100%); }
+.res-emoji  { font-size:56px; margin-bottom:.5rem; }
+.res-score  { font-size:52px; font-weight:700; line-height:1; }
+.res-of     { font-size:16px; opacity:.85; margin-bottom:.5rem; }
+.res-msg    { font-size:14px; opacity:.9; max-width:400px; margin:0 auto; line-height:1.6; }
+
+.detalle-card { background:#fff; border-radius:var(--comp-radius); box-shadow:var(--comp-shadow); padding:1.5rem; margin-bottom:1.1rem; }
+.det-preg  { font-size:14px; font-weight:600; color:var(--text); margin-bottom:.75rem; line-height:1.5; }
+.det-resp  { font-size:13px; padding:.6rem 1rem; border-radius:var(--radius-sm); margin-bottom:.4rem; }
+.det-ok    { background:#E8F5E9; color:#1B5E20; border-left:3px solid #4CAF50; }
+.det-err   { background:#FFEBEE; color:#B71C1C; border-left:3px solid #E53935; }
+.det-correcta { background:#F1F8E9; color:#2E7D32; border-left:3px solid #81C784; font-size:12px; }
+.det-nr    { background:#FFF8E1; color:#5D4037; border-left:3px solid #FFB300; }
+
+.cta-res { display:flex; gap:1rem; flex-wrap:wrap; margin-top:2rem; justify-content:center; }
+</style>
+{% endblock %}
+
+{% block comp_content %}
+<div class="res-wrap">
+  <div class="breadcrumb">
+    <a href="{% url 'competencias:lista' %}">Competencias</a><span>›</span>
+    <a href="{% url 'competencias:niveles' comp.slug %}">{{ comp.nombre }}</a><span>›</span>
+    <span>Resultado Nivel {{ nivel.numero }}</span>
+  </div>
+
+  <div class="res-banner {% if aprobado %}aprobado{% else %}repaso{% endif %}">
+    <div class="res-emoji">{% if aprobado %}🏆{% else %}📚{% endif %}</div>
+    <div class="res-score">{{ resultado.correctas }}</div>
+    <div class="res-of">de {{ resultado.total }} correctas · {{ resultado.porcentaje }}%</div>
+    <div class="res-msg">
+      {% if aprobado %}
+        ¡Excelente trabajo! Aprobaste este nivel. ¡Sigue así!
+      {% else %}
+        No te rindas. Repasa la lección y vuelve a intentarlo. ¡Tú puedes!
+      {% endif %}
+    </div>
+  </div>
+
+  <h3 style="font-size:15px;font-weight:700;margin-bottom:1rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;">Detalle de respuestas</h3>
+
+  {% for item in detalle %}
+  <div class="detalle-card">
+    <div class="det-preg">{{ forloop.counter }}. {{ item.pregunta.texto }}</div>
+
+    {% if item.sin_responder %}
+      <div class="det-resp det-nr">⚠️ Sin responder</div>
+      <div class="det-resp det-correcta">✓ Respuesta correcta: {{ item.correcta.texto }}</div>
+
+    {% elif item.es_correcto %}
+      <div class="det-resp det-ok">✅ {{ item.elegida.texto }}</div>
+
+    {% else %}
+      <div class="det-resp det-err">❌ Tu respuesta: {{ item.elegida.texto }}</div>
+      <div class="det-resp det-correcta">✓ Respuesta correcta: {{ item.correcta.texto }}</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <div class="cta-res">
+    {% if not aprobado %}
+    <a href="{% url 'competencias:contenido' comp.slug nivel.numero %}" class="btn-kid btn-kid-blue">
+      📖 Repasar lección
+    </a>
+    <a href="{% url 'competencias:quiz' comp.slug nivel.numero %}" class="btn-kid btn-kid-outline">
+      🔄 Intentar de nuevo
+    </a>
+    {% else %}
+    <a href="{% url 'competencias:niveles' comp.slug %}" class="btn-kid btn-kid-green">
+      ¡Siguiente nivel! →
+    </a>
+    <a href="{% url 'competencias:lista' %}" class="btn-kid btn-kid-outline">
+      Ver otras competencias
+    </a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

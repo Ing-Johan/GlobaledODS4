@@ -1,0 +1,82 @@
+{% extends "competencias/base_comp.html" %}
+{% block title %}Quiz — {{ nivel }} — GlobalEd{% endblock %}
+{% block nav_comp %}active{% endblock %}
+
+{% block comp_style %}
+<style>
+.quiz-wrap  { max-width:700px; margin:0 auto; }
+.quiz-header { background:linear-gradient(135deg,{{ comp.color }} 0%,#0D47A1 100%); border-radius:var(--comp-radius); color:#fff; padding:1.75rem 2rem; margin-bottom:1.75rem; }
+.quiz-header h2 { font-size:20px; font-weight:700; }
+.quiz-progress { font-size:12px; opacity:.8; margin-top:.3rem; }
+
+.pregunta-card { background:#fff; border-radius:var(--comp-radius); box-shadow:var(--comp-shadow); padding:1.6rem; margin-bottom:1.25rem; }
+.preg-num  { font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:.06em; margin-bottom:.6rem; }
+.preg-txt  { font-size:15px; font-weight:600; color:var(--text); line-height:1.5; margin-bottom:1.1rem; }
+.opciones  { display:flex; flex-direction:column; gap:.6rem; }
+.opcion-label { display:flex; align-items:center; gap:.9rem; padding:.85rem 1rem; border-radius:var(--radius-md); border:2px solid #D8ECD8; cursor:pointer; font-size:14px; color:var(--text); transition:border-color .15s, background .15s; }
+.opcion-label:hover { border-color:var(--blue); background:var(--blue-light); }
+.opcion-label input[type=radio] { accent-color:var(--blue); width:18px; height:18px; flex-shrink:0; }
+.opcion-label input[type=radio]:checked + span { font-weight:600; color:var(--blue); }
+.opcion-label:has(input:checked) { border-color:var(--blue); background:var(--blue-light); }
+
+.quiz-footer { background:#fff; border-radius:var(--comp-radius); padding:1.25rem 1.6rem; box-shadow:var(--comp-shadow); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
+.quiz-footer p { font-size:13px; color:var(--text-muted); }
+</style>
+{% endblock %}
+
+{% block comp_content %}
+<div class="quiz-wrap">
+  <div class="breadcrumb" style="font-size: large;">
+    <a href="{% url 'competencias:lista' %}">Competencias</a><span>›</span>
+    <a href="{% url 'competencias:niveles' comp.slug %}">{{ comp.nombre }}</a><span>›</span>
+    <a href="{% url 'competencias:contenido' comp.slug nivel.numero %}">Nivel {{ nivel.numero }}</a><span>›</span>
+    <span>Quiz</span>
+  </div>
+
+  <div class="quiz-header">
+    <h2>🧠 Quiz — {{ nivel.titulo }}</h2>
+    <div class="quiz-progress">{{ preguntas|length }} preguntas · Selecciona la respuesta correcta</div>
+  </div>
+
+  <form method="post" action="{% url 'competencias:resultado' comp.slug nivel.numero %}" id="quizForm">
+    {% csrf_token %}
+
+    {% for preg in preguntas %}
+    <div class="pregunta-card">
+      <div class="preg-num">Pregunta {{ forloop.counter }} de {{ preguntas|length }}</div>
+      <div class="preg-txt">{{ preg.texto }}</div>
+      <div class="opciones">
+        {% for op in preg.opciones.all %}
+        <label class="opcion-label">
+          <input type="radio" name="pregunta_{{ preg.id }}" value="{{ op.id }}" required>
+          <span>{{ op.texto }}</span>
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+
+    <div class="quiz-footer">
+      <p>Responde todas las preguntas antes de enviar.</p>
+      <button type="submit" class="btn-kid btn-kid-blue" onclick="return validarQuiz()">
+        Enviar respuestas ✓
+      </button>
+    </div>
+  </form>
+</div>
+
+<script>
+function validarQuiz() {
+  const total = {{ preguntas|length }};
+  const ids   = [{% for p in preguntas %}{{ p.id }}{% if not forloop.last %},{% endif %}{% endfor %}];
+  for (const id of ids) {
+    const sel = document.querySelector(`input[name="pregunta_${id}"]:checked`);
+    if (!sel) {
+      alert('Por favor responde todas las preguntas antes de enviar. 😊');
+      return false;
+    }
+  }
+  return true;
+}
+</script>
+{% endblock %}

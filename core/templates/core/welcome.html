@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+{% block title %}Bienvenido — GlobalEd{% endblock %}
+{% block extra_style %}
+{% load static %}
+<style>
+.welcome-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+.welcome-card { background: var(--white); border-radius: 28px; box-shadow: var(--shadow); max-width: 400px; width: 100%; padding: 2rem 2.5rem; text-align: center; }
+.welcome-icon { width: 150px; height: 150px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto .75rem; }
+.welcome-heading { font-size: 28px; font-weight: 700; color: var(--blue); margin-bottom: .3rem; }
+.welcome-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 2rem; }
+.section-divider { display: flex; align-items: center; gap: 10px; margin: 1rem 0; color: var(--text-muted); font-size: 12px; }
+.section-divider::before, .section-divider::after { content: ''; flex: 1; border-top: 1px solid #D8ECD8; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="welcome-wrap">
+  <div class="welcome-card">
+    <div class="welcome-icon">
+      <img src="{% static 'images/logo.jpeg' %}" alt="GlobalEd icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+    </div>
+    <div class="welcome-heading">¡Bienvenido!</div>
+    <div class="welcome-sub">Únete a la comunidad GlobalEd</div>
+    <p class="text-muted" style="margin-bottom:1.25rem;">¿No tienes una cuenta?</p>
+    <a href="{% url 'registro' %}" class="btn btn-primary">Crear cuenta</a>
+    <div class="section-divider">o</div>
+    <p class="text-muted" style="margin-bottom:.75rem;">¿Ya tienes una cuenta?</p>
+    <a href="{% url 'login' %}" class="btn btn-secondary">Iniciar sesión</a>
+  </div>
+</div>
+{% endblock %}

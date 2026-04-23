@@ -1,0 +1,335 @@
+{% extends "core/base.html" %}
+{% block title %}Tests — GlobalEd{% endblock %}
+{% block extra_style %}
+{% load static %}
+<style>
+.tests-hero { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); border-radius: var(--radius-lg); padding: 2rem 2.25rem; color: var(--white); margin-bottom: 1.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+.tests-hero h2 { font-size: 22px; font-weight: 700; margin-bottom: .35rem; }
+.tests-hero p  { font-size: 13px; opacity: .85; max-width: 480px; line-height: 1.65; }
+.score-pill { background: rgba(255,255,255,.15); border-radius: var(--radius-lg); padding: .9rem 1.4rem; text-align: center; min-width: 120px; flex-shrink: 0; }
+.score-pill .pill-n { font-size: 32px; font-weight: 700; line-height: 1; }
+.score-pill .pill-l { font-size: 11px; opacity: .8; margin-top: 4px; }
+
+.progress-wrap { background: var(--bg-soft); border-radius: var(--radius-lg); padding: .9rem 1.4rem; margin-bottom: 1.4rem; display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.progress-label { font-size: 12px; color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+.progress-bar-bg { flex: 1; min-width: 100px; height: 8px; background: #D8ECD8; border-radius: 10px; overflow: hidden; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--blue) 0%, var(--green) 100%); border-radius: 10px; transition: width .5s ease; }
+.progress-pct { font-size: 13px; font-weight: 700; color: var(--blue); min-width: 36px; text-align: right; }
+.sc-badges { display: flex; gap: 8px; }
+.sc-badge { display: flex; align-items: center; gap: 5px; font-size: 13px; font-weight: 700; padding: 4px 13px; border-radius: 20px; }
+.sc-badge.right { background: #E8F5E9; color: #2E7D32; }
+.sc-badge.wrong { background: #FFEBEE; color: var(--danger); }
+
+.filter-bar { display: flex; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; align-items: center; }
+.filter-bar-label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+.cat-btn { font-size: 12px; padding: 6px 16px; border-radius: 20px; border: 1.5px solid #C8DFC8; background: transparent; cursor: pointer; color: var(--text-muted); font-weight: 600; font-family: inherit; transition: all .2s; }
+.cat-btn:hover  { background: var(--bg-soft); border-color: var(--blue); color: var(--blue); }
+.cat-btn.active { background: var(--blue); color: var(--white); border-color: var(--blue); }
+
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(45%, 100%), 1fr)); gap: 1.1rem; }
+
+/* FLIP CARD */
+.flip-card  { height: 234px; perspective: 1000px; }
+.flip-inner { position: relative; width: 100%; height: 100%; transition: transform .52s cubic-bezier(.4,0,.2,1); transform-style: preserve-3d; }
+.flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+.flip-front, .flip-back { position: absolute; inset: 0; border-radius: var(--radius-lg); backface-visibility: hidden; -webkit-backface-visibility: hidden; padding: 1.1rem 1.2rem; display: flex; flex-direction: column; overflow: hidden; }
+.flip-front { background: var(--white); border: 1.5px solid #D8ECD8; box-shadow: var(--shadow-sm); }
+.flip-back  { transform: rotateY(180deg); }
+.flip-back.correct { background: #F1F8E9; border: 1.5px solid #A5D6A7; }
+.flip-back.wrong   { background: #FFEBEE; border: 1.5px solid #EF9A9A; }
+.flip-back.pending { background: var(--bg-soft); border: 1.5px solid #D8ECD8; }
+
+.card-cat-tag { font-size: 10px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; display: inline-block; align-self: flex-start; margin-bottom: 8px; }
+.tag-c0 { background: var(--blue-light); color: var(--blue); }
+.tag-c1 { background: #E8F5E9; color: #2E7D32; }
+.tag-c2 { background: #FFF8E1; color: #E65100; }
+
+.card-q { font-size: 13px; font-weight: 600; line-height: 1.5; color: var(--text); flex: 1; }
+.card-opts { margin-top: 8px; display: flex; flex-direction: column; gap: 5px; }
+.opt-btn { font-size: 12px; padding: 6px 10px; border-radius: var(--radius-sm); border: 1.5px solid #D8ECD8; background: var(--bg-soft); cursor: pointer; text-align: left; color: var(--text); transition: background .15s, border-color .15s; line-height: 1.3; font-family: inherit; }
+.opt-btn:hover:not(:disabled) { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+.opt-btn.opt-correct { background: #E8F5E9; border-color: #66BB6A; color: #1B5E20; font-weight: 600; }
+.opt-btn.opt-wrong   { background: #FFEBEE; border-color: #EF5350; color: #B71C1C; font-weight: 600; }
+
+.back-icon   { font-size: 22px; margin-bottom: 4px; }
+.back-result { font-size: 14px; font-weight: 700; margin-bottom: 5px; }
+.back-result.ok  { color: #2E7D32; }
+.back-result.err { color: var(--danger); }
+.back-correct-ans { font-size: 11px; font-weight: 700; color: #2E7D32; margin-bottom: 5px; }
+.back-explain { font-size: 12px; line-height: 1.6; color: var(--text-muted); overflow: auto; flex: 1; }
+
+/* RESULT BANNER */
+.result-banner { display: none; margin-top: 1.75rem; background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 2.25rem 2rem; text-align: center; border: 1.5px solid #D8ECD8; }
+.result-banner.show { display: block; }
+.result-emoji { font-size: 52px; margin-bottom: .5rem; }
+.result-score-big { font-size: 52px; font-weight: 700; color: var(--blue); line-height: 1; }
+.result-of  { font-size: 15px; color: var(--text-muted); margin-bottom: .75rem; }
+.result-msg { font-size: 14px; color: var(--text-muted); max-width: 420px; margin: 0 auto 1.5rem; line-height: 1.65; }
+.result-actions { display: flex; gap: .75rem; justify-content: center; flex-wrap: wrap; }
+.result-actions .btn { max-width: 200px; }
+
+/* HISTORIAL */
+.hist-section { margin-top: 2rem; }
+.hist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(210px,100%), 1fr)); gap: .75rem; }
+.hist-card { background: var(--white); border-radius: var(--radius-md); border: 1px solid #D8ECD8; padding: .9rem 1rem; display: flex; align-items: center; gap: .75rem; }
+.hist-dot  { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.hist-info { flex: 1; min-width: 0; }
+.hist-cat  { font-size: 12px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hist-sub  { font-size: 11px; color: var(--text-muted); }
+.hist-pct  { font-size: 14px; font-weight: 700; }
+
+@media(max-width: 600px) { .tests-hero { padding: 1.5rem 1.25rem; } .score-pill { display: none; } }
+</style>
+{% endblock %}
+
+{% block navbar %}
+<nav class="navbar">
+  <div class="logo"><img src="{% static 'images/logo.jpeg' %}" alt="GlobalEd icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">GlobalEd</div>
+  <div class="nav-links">
+    <a href="{% url 'competencias:lista' %}" class="nav-link btn-competencias" style="color: var(--blue); font-size: 20px;">Competencias</a>
+    <a href="{% url 'explorar' %}" class="nav-link" style="font-size: 20px;">Explorar</a>
+    <a href="{% url 'tests' %}"    class="nav-link active" style="font-size: 20px;">Tests</a>
+    <a href="{% url 'dashboard' %}" class="nav-link" style="font-size: 20px;">Inicio</a>
+  </div>
+  <div class="nav-avatar" tabindex="0">
+    <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+    <div class="dropdown">
+      <a href="{% url 'dashboard' %}">👤 {{ request.user.username }}</a>
+      <hr style="border:none;border-top:1px solid #D8ECD8;margin:4px 0;">
+      <a href="{% url 'logout' %}" class="danger">Cerrar sesión</a>
+    </div>
+  </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="page-main">
+
+  <div class="tests-hero">
+    <div>
+      <h2>🧠 Tests interactivos</h2>
+      <p>Pon a prueba tu conocimiento sobre el ODS 4. Responde las tarjetas, aprende de cada explicación y mejora tu puntaje.</p>
+    </div>
+    <div class="score-pill">
+      <div class="pill-n" id="heroScore">{{ puntaje }}</div>
+      <div class="pill-l">puntos totales</div>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <span class="progress-label">Progreso</span>
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill" style="width:0%;"></div></div>
+    <span class="progress-pct" id="progressPct">0%</span>
+    <div class="sc-badges">
+      <span class="sc-badge right">&#10003; <span id="scRight">0</span></span>
+      <span class="sc-badge wrong">&#10007; <span id="scWrong">0</span></span>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <span class="filter-bar-label">Categoría:</span>
+    <button class="cat-btn active" onclick="filterCat('all',this)">Todas</button>
+    <button class="cat-btn" onclick="filterCat(0,this)">Conceptos ODS 4</button>
+    <button class="cat-btn" onclick="filterCat(1,this)">Datos globales</button>
+    <button class="cat-btn" onclick="filterCat(2,this)">Países y regiones</button>
+  </div>
+
+  <div class="cards-grid" id="cardsGrid"></div>
+
+  <div class="result-banner" id="resultBanner">
+    <div class="result-emoji" id="resultEmoji"></div>
+    <div class="result-score-big" id="resultScore"></div>
+    <div class="result-of" id="resultOf"></div>
+    <div class="result-msg" id="resultMsg"></div>
+    <div class="result-actions">
+      <button class="btn btn-primary" onclick="restartQuiz()">Repetir quiz</button>
+      <a href="{% url 'dashboard' %}" class="btn btn-outline">Ver mi progreso</a>
+    </div>
+  </div>
+
+  {% if resultados %}
+  <div class="hist-section">
+    <div class="section-label">Mis resultados anteriores</div>
+    <div class="hist-grid">
+      {% for r in resultados %}
+      <div class="hist-card">
+        <div class="hist-dot" style="background:{% if r.porcentaje >= 70 %}#66BB6A{% elif r.porcentaje >= 40 %}#FFA726{% else %}#EF5350{% endif %};"></div>
+        <div class="hist-info">
+          <div class="hist-cat">{{ r.categoria }}</div>
+          <div class="hist-sub">{{ r.correctas }}/{{ r.total }} · {{ r.fecha|date:"d M Y" }}</div>
+        </div>
+        <div class="hist-pct" style="color:{% if r.porcentaje >= 70 %}#2E7D32{% elif r.porcentaje >= 40 %}#E65100{% else %}#B71C1C{% endif %};">{{ r.porcentaje }}%</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+
+<script>
+const QUESTIONS = [
+  {cat:0,q:'¿Qué significa ODS?',opts:['Objetivos de Desarrollo Sostenible','Organización de Desarrollo Social','Orden de Desarrollo Sistemático','Objetivos de Distribución Solidaria'],ans:0,explain:'ODS son las siglas de Objetivos de Desarrollo Sostenible, los 17 objetivos globales adoptados por la ONU en 2015 dentro de la Agenda 2030.'},
+  {cat:0,q:'¿En qué año fue adoptada la Agenda 2030?',opts:['2000','2010','2015','2020'],ans:2,explain:'En septiembre de 2015, los 193 Estados Miembros de la ONU adoptaron la Agenda 2030 para el Desarrollo Sostenible, que incluye los 17 ODS.'},
+  {cat:0,q:'¿Cuántas metas tiene el ODS 4?',opts:['4','7','10','17'],ans:2,explain:'El ODS 4 cuenta con 10 metas específicas que van desde la educación preescolar hasta la formación docente y el aprendizaje permanente.'},
+  {cat:0,q:'¿Qué busca garantizar el ODS 4?',opts:['Solo educación universitaria','Educación inclusiva y de calidad para todos','Educación privada de excelencia','Alfabetización solo en adultos'],ans:1,explain:'El ODS 4 busca garantizar una educación inclusiva, equitativa y de calidad, y promover oportunidades de aprendizaje permanente para todas las personas.'},
+  {cat:0,q:'¿Qué organismo de la ONU custodia los indicadores del ODS 4?',opts:['UNICEF','Banco Mundial','UNESCO','PNUD'],ans:2,explain:'El Instituto de Estadística de la UNESCO (UIS) es la agencia custodio oficial de los indicadores globales del ODS 4.'},
+  {cat:1,q:'¿Cuántos niños están fuera de la escuela en el mundo (2023)?',opts:['100 millones','272 millones','50 millones','400 millones'],ans:1,explain:'Según la UNESCO, aproximadamente 272 millones de niños, adolescentes y jóvenes estaban fuera de la escuela en 2023.'},
+  {cat:1,q:'¿Cuál es la tasa global de alfabetización adulta en 2025?',opts:['65%','73%','86%','95%'],ans:2,explain:'La tasa global de alfabetización adulta (mayores de 15 años) es del 86.3% en 2025, según el Instituto de Estadística de la UNESCO.'},
+  {cat:1,q:'¿Qué porcentaje de estudiantes logrará competencia lectora mínima para 2030 sin cambios?',opts:['42%','58%','75%','90%'],ans:1,explain:'El Pacto Mundial estima que, con las tendencias actuales, solo el 58% de los estudiantes alcanzará competencia lectora mínima para 2030.'},
+  {cat:1,q:'¿Cuántos países presentaron metas nacionales para al menos un indicador del ODS 4?',opts:['40% (77)','60% (116)','80% (164)','100% (193)'],ans:2,explain:'Según el Tablero de Control ODS 4 de la UNESCO (2025), el 80% de los países — 164 de 193 — presentaron puntos de referencia.'},
+  {cat:1,q:'¿Qué porcentaje del PIB destina Noruega a educación pública?',opts:['3.1%','5.0%','7.7%','10.2%'],ans:2,explain:'Noruega destina aproximadamente el 7.7% de su PIB a educación, siendo uno de los países con mayor inversión educativa del mundo.'},
+  {cat:2,q:'¿Qué país tiene la tasa de alfabetización más baja del mundo?',opts:['Afganistán','Malí','Chad','Níger'],ans:2,explain:'Chad tiene la tasa de alfabetización más baja del mundo (~27%), resultado de conflictos, pobreza extrema y falta de infraestructura escolar.'},
+  {cat:2,q:'¿Qué país latinoamericano tiene la tasa de alfabetización más alta (~99.8%)?',opts:['Colombia','Argentina','Cuba','Uruguay'],ans:2,explain:'Cuba registra una tasa de alfabetización de ~99.8%, resultado de décadas de políticas educativas universales.'},
+  {cat:2,q:'¿Qué región concentra más del 40% de los niños sin educación primaria?',opts:['Asia del Sur','América Latina','Europa del Este','África subsahariana'],ans:3,explain:'África subsahariana concentra más del 40% de los niños sin escolarizar a nivel global, la mayor crisis educativa del mundo.'},
+  {cat:2,q:'¿Cuál es la tasa de escolarización primaria en Europa?',opts:['75%','85%','92%','98%'],ans:3,explain:'Europa tiene una tasa de escolarización primaria de ~98%, gracias a sistemas educativos consolidados y de carácter obligatorio.'},
+  {cat:2,q:'¿Cuánto destina Colombia a educación (% del PIB)?',opts:['1.5%','2.9%','4.5%','6.8%'],ans:2,explain:'Colombia invierte alrededor del 4.5% de su PIB en educación pública, un porcentaje moderado dentro del contexto latinoamericano.'},
+];
+
+const CAT_LABELS = ['Conceptos ODS 4','Datos globales','Países y regiones'];
+const CAT_TAGS   = ['tag-c0','tag-c1','tag-c2'];
+const CSRF       = '{{ csrf_token }}';
+
+let state = {}, selState = {};
+let rightCount = 0, wrongCount = 0;
+let currentCat = 'all', currentFiltered = [];
+
+function buildCards(cat) {
+  currentCat = cat;
+  currentFiltered = cat === 'all' ? QUESTIONS : QUESTIONS.filter(q => q.cat === cat);
+  const grid = document.getElementById('cardsGrid');
+  grid.innerHTML = '';
+
+  currentFiltered.forEach(q => {
+    const idx      = QUESTIONS.indexOf(q);
+    const answered = state[idx] != null;
+    const correct  = state[idx] === true;
+    let optsHtml   = '';
+
+    q.opts.forEach((o, oi) => {
+      let cls = '';
+      if (answered) {
+        if (oi === q.ans)              cls = 'opt-correct';
+        else if (oi === selState[idx]) cls = 'opt-wrong';
+      }
+      optsHtml += `<button class="opt-btn ${cls}" ${answered ? 'disabled' : ''}
+        onclick="answer(event,${idx},${oi})">${o}</button>`;
+    });
+
+    const backClass  = !answered ? 'pending' : correct ? 'correct' : 'wrong';
+    const bIcon      = !answered ? '' : correct ? '✅' : '❌';
+    const bTxt       = !answered ? '' : correct ? '¡Correcto!' : 'Incorrecto';
+    const bCls       = correct ? 'ok' : 'err';
+    const correctAns = answered && !correct
+      ? `<div class="back-correct-ans">✓ Correcta: ${q.opts[q.ans]}</div>` : '';
+
+    grid.innerHTML += `
+      <div class="flip-card ${answered ? 'flipped' : ''}" id="card-${idx}">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="card-cat-tag ${CAT_TAGS[q.cat]}">${CAT_LABELS[q.cat]}</span>
+            <div class="card-q">${q.q}</div>
+            <div class="card-opts">${optsHtml}</div>
+          </div>
+          <div class="flip-back ${backClass}">
+            <div class="back-icon">${bIcon}</div>
+            <div class="back-result ${bCls}">${bTxt}</div>
+            ${correctAns}
+            <div class="back-explain">${q.explain}</div>
+          </div>
+        </div>
+      </div>`;
+  });
+
+  updateProgress();
+  checkAllAnswered();
+}
+
+function answer(e, idx, chosen) {
+  e.stopPropagation();
+  if (state[idx] != null) return;
+  const q = QUESTIONS[idx];
+  const correct = chosen === q.ans;
+  state[idx] = correct; selState[idx] = chosen;
+  if (correct) rightCount++; else wrongCount++;
+  document.getElementById('scRight').textContent = rightCount;
+  document.getElementById('scWrong').textContent = wrongCount;
+
+  const card = document.getElementById('card-' + idx);
+  card.querySelectorAll('.opt-btn').forEach((b, bi) => {
+    b.disabled = true;
+    if (bi === q.ans)    b.classList.add('opt-correct');
+    else if (bi === chosen) b.classList.add('opt-wrong');
+  });
+
+  setTimeout(() => {
+    card.classList.add('flipped');
+    const back = card.querySelector('.flip-back');
+    back.className = `flip-back ${correct ? 'correct' : 'wrong'}`;
+    back.querySelector('.back-icon').textContent   = correct ? '✅' : '❌';
+    back.querySelector('.back-result').textContent = correct ? '¡Correcto!' : 'Incorrecto';
+    back.querySelector('.back-result').className   = `back-result ${correct ? 'ok' : 'err'}`;
+    updateProgress();
+    checkAllAnswered();
+  }, 350);
+}
+
+function updateProgress() {
+  const total = currentFiltered.length;
+  const done  = currentFiltered.filter(q => state[QUESTIONS.indexOf(q)] != null).length;
+  const pct   = total ? Math.round((done / total) * 100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent  = pct + '%';
+}
+
+function checkAllAnswered() {
+  const total   = currentFiltered.length;
+  if (!total) return;
+  const allDone = currentFiltered.every(q => state[QUESTIONS.indexOf(q)] != null);
+  const banner  = document.getElementById('resultBanner');
+  if (!allDone) { banner.classList.remove('show'); return; }
+
+  const correct = currentFiltered.filter(q => state[QUESTIONS.indexOf(q)] === true).length;
+  const pct     = Math.round((correct / total) * 100);
+  let emoji, msg;
+  if (pct === 100) { emoji='🏆'; msg='¡Perfecto! Dominas el ODS 4 como un experto.'; }
+  else if (pct>=70){ emoji='🎉'; msg='¡Muy bien! Tienes un sólido conocimiento del ODS 4. Revisa las incorrectas y vuelve a intentarlo.'; }
+  else if (pct>=40){ emoji='📚'; msg='Buen intento. Visita "Explorar" para reforzar tus conocimientos.'; }
+  else             { emoji='💡'; msg='¡Hay mucho por aprender! Revisa "Explorar" y "Metas" antes de repetir.'; }
+
+  document.getElementById('resultEmoji').textContent    = emoji;
+  document.getElementById('resultScore').textContent    = correct;
+  document.getElementById('resultOf').textContent       = `de ${total} correctas (${pct}%)`;
+  document.getElementById('resultMsg').textContent      = msg;
+  banner.classList.add('show');
+  banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  const catLabel = currentCat === 'all' ? 'Todas las categorías' : CAT_LABELS[currentCat];
+  fetch('{% url "guardar_resultado" %}', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': CSRF },
+    body: JSON.stringify({ categoria: catLabel, correctas: correct, total })
+  }).then(r => r.json()).then(d => {
+    if (d.ok) document.getElementById('heroScore').textContent =
+      parseInt(document.getElementById('heroScore').textContent) + correct;
+  });
+}
+
+function filterCat(cat, btn) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildCards(cat);
+}
+
+function restartQuiz() {
+  state = {}; selState = {};
+  rightCount = 0; wrongCount = 0;
+  document.getElementById('scRight').textContent = 0;
+  document.getElementById('scWrong').textContent = 0;
+  document.getElementById('resultBanner').classList.remove('show');
+  buildCards(currentCat);
+}
+
+buildCards('all');
+</script>
+{% endblock %}

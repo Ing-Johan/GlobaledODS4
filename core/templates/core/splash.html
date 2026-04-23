@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% block title %}GlobalEd — Educación de Calidad{% endblock %}
+{% block extra_style %}
+{% load static %}
+<style>
+.splash-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+.splash-card { background: var(--white); border-radius: 28px; box-shadow: var(--shadow); max-width: 480px; width: 100%; padding: 3rem 2.5rem; text-align: center; }
+.splash-icon { width: 150px; height: 150px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; }
+.splash-title { font-size: 34px; font-weight: 700; color: var(--blue); margin-bottom: .2rem; }
+.splash-sub   { font-size: 13px; color: var(--text-muted); margin-bottom: 1.5rem; }
+.tag-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+.tag { background: var(--blue-light); color: var(--blue); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; letter-spacing: .04em; }
+.splash-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 2rem; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="splash-wrap">
+  <div class="splash-card">
+    <div class="splash-icon">
+      <img src="{% static 'images/logo.jpeg' %}" alt="GlobalEd icon" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+    </div>
+    <div class="splash-title">GlobalEd</div>
+    <div class="splash-sub">Plataforma educativa · ODS 4</div>
+    <div class="tag-row">
+      <span class="tag">ODS 4</span>
+      <span class="tag">Educación de Calidad</span>
+      <span class="tag">Agenda 2030</span>
+    </div>
+    <p class="splash-desc">
+      Diseñada para jóvenes y estudiantes, GlobalEd facilita la comprensión del ODS 4 mediante contenido visual, datos globales y quizzes interactivos.
+    </p>
+    <a href="{% url 'welcome' %}" class="btn btn-primary">Comenzar</a>
+  </div>
+</div>
+{% endblock %}

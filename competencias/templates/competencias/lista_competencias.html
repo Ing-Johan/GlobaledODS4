@@ -1,0 +1,41 @@
+{% extends "competencias/base_comp.html" %}
+{% block title %}Competencias — GlobalEd{% endblock %}
+{% block nav_comp %}active{% endblock %}
+
+{% block comp_style %}
+<style>
+.hero-comp { background:linear-gradient(135deg,#1565C0 0%,#0D47A1 100%); border-radius:var(--comp-radius); color:#fff; padding:2rem 2.25rem; margin-bottom:2rem; }
+.hero-comp h1 { font-size:22px; font-weight:700; margin-bottom:.4rem; }
+.hero-comp p  { font-size:13px; opacity:.85; max-width:520px; line-height:1.7; }
+.grid-comp { display:grid; grid-template-columns:repeat(auto-fill, minmax(min(42%,100%),1fr)); gap:1.25rem; }
+.comp-icon { font-size:36px; margin-bottom:.9rem; }
+.comp-nombre { font-size:17px; font-weight:700; color:var(--blue); margin-bottom:.4rem; }
+.comp-desc   { font-size:13px; color:var(--text-muted); line-height:1.6; margin-bottom:1rem; }
+.prog-bar-bg   { background:#EEF5E5; border-radius:10px; height:8px; overflow:hidden; margin-bottom:.4rem; }
+.prog-bar-fill { height:8px; border-radius:10px; transition:width .5s; }
+.prog-label  { font-size:11px; color:var(--text-muted); }
+</style>
+{% endblock %}
+
+{% block comp_content %}
+<div class="hero-comp">
+  <h1>🎓 Módulo de Competencias</h1>
+  <p>Aprende y practica las cuatro competencias del ODS 4. Cada área tiene 5 niveles con lecciones y quizzes diseñados para ti.</p>
+</div>
+
+<div class="grid-comp">
+  {% for item in data %}
+  <a href="{% url 'competencias:niveles' item.comp.slug %}" style="text-decoration:none;">
+    <div class="comp-card" style="border-top:4px solid {{ item.comp.color }};">
+      <div class="comp-icon">{{ item.comp.icono }}</div>
+      <div class="comp-nombre">{{ item.comp.nombre }}</div>
+      <div class="comp-desc">{{ item.comp.descripcion }}</div>
+      <div class="prog-bar-bg">
+        <div class="prog-bar-fill" style="width:{{ item.pct }}%;background:{{ item.comp.color }};"></div>
+      </div>
+      <div class="prog-label">{{ item.completados }} de {{ item.total }} niveles completados</div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% endblock %}
