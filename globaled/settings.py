@@ -6,6 +6,13 @@ SECRET_KEY = 'django-insecure-cambia-esta-clave-en-produccion-123456'
 
 DEBUG = True
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://globaledods4.onrender.com"
+]
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 ALLOWED_HOSTS = ['https://globaledods4.onrender.com','*']
 
 INSTALLED_APPS = [
