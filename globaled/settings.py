@@ -6,7 +6,7 @@ SECRET_KEY = 'django-insecure-cambia-esta-clave-en-produccion-123456'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://globaledods4.onrender.com','*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
