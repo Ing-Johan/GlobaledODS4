@@ -63,6 +63,18 @@ class Contenido(models.Model):
                                   help_text='Ejemplo concreto para el niño')
     tip        = models.CharField(max_length=300, blank=True,
                                   help_text='Tip rápido o frase memorable')
+    video_file = models.FileField(
+        upload_to='videos/%Y/%m/', blank=True, null=True,
+        help_text='Video educativo local (MP4, WebM, etc)'
+    )
+    actividades = models.TextField(
+        blank=True,
+        help_text='Mini-actividades sugeridas para el alumno (HTML permitido)'
+    )
+    faq = models.TextField(
+        blank=True,
+        help_text='Preguntas frecuentes y respuestas (HTML permitido)'
+    )
 
     class Meta:
         verbose_name        = 'Contenido'

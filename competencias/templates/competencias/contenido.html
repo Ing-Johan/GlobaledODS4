@@ -4,16 +4,138 @@
 
 {% block comp_style %}
 <style>
-.leccion-wrap { max-width:700px; margin:0 auto; }
+.leccion-wrap { max-width:800px; margin:0 auto; }
 .leccion-header { background:linear-gradient(135deg,{{ comp.color }} 0%,#0D47A1 100%); border-radius:var(--comp-radius); color:#fff; padding:2rem; margin-bottom:1.75rem; }
-.leccion-header h1 { font-size:20px; font-weight:700; margin-bottom:.3rem; }
-.leccion-body { background:#fff; border-radius:var(--comp-radius); box-shadow:var(--comp-shadow); padding:2rem; margin-bottom:1.25rem; font-size:15px; line-height:1.8; color:var(--text); }
-.leccion-body p { margin-bottom:1rem; }
-.ejemplo-box { background:var(--bg-soft); border-left:4px solid #81C784; border-radius:0 var(--radius-md) var(--radius-md) 0; padding:1.1rem 1.4rem; margin:1.25rem 0; font-size:14px; line-height:1.7; }
+.leccion-header h1 { font-size:22px; font-weight:700; margin-bottom:.3rem; }
+
+/* ── Video Container ── */
+.video-container { 
+  position:relative; width:100%; 
+  background:#000; border-radius:var(--comp-radius); 
+  overflow:hidden; margin-bottom:2rem; 
+  box-shadow:var(--comp-shadow); 
+}
+.video-container::after { 
+  content:''; display:block; 
+  padding-bottom:56.25%; 
+}
+.video-container video, 
+.video-container iframe { 
+  position:absolute; top:0; left:0; 
+  width:100%; height:100%; 
+}
+
+.video-label { 
+  display:inline-block; 
+  background:{{ comp.color }}; color:#fff; 
+  padding:0.35rem 0.8rem; 
+  border-radius:12px; 
+  font-size:12px; font-weight:700; 
+  margin-bottom:1rem; 
+  text-transform:uppercase; 
+  letter-spacing:0.05em;
+}
+
+/* ── Secciones de contenido ── */
+.leccion-section {
+  background:#fff; border-radius:var(--comp-radius); 
+  box-shadow:var(--comp-shadow); 
+  padding:2rem; margin-bottom:1.5rem; 
+  font-size:15px; line-height:1.8; 
+  color:var(--text);
+}
+.leccion-section h2 { 
+  font-size:18px; font-weight:700; 
+  color:{{ comp.color }}; 
+  margin-bottom:1.2rem; 
+  display:flex; align-items:center; gap:0.6rem;
+}
+.leccion-section h3 { 
+  font-size:16px; font-weight:700; 
+  color:var(--text); 
+  margin-top:1.5rem; 
+  margin-bottom:0.7rem;
+}
+.leccion-section p { margin-bottom:1rem; }
+.leccion-section ul, .leccion-section ol {
+  margin-left:1.5rem; margin-bottom:1rem;
+}
+.leccion-section li { margin-bottom:0.6rem; }
+
+/* ── Cajas destacadas ── */
+.ejemplo-box { 
+  background:var(--bg-soft); 
+  border-left:4px solid #81C784; 
+  border-radius:0 var(--radius-md) var(--radius-md) 0; 
+  padding:1.2rem 1.4rem; 
+  margin:1.5rem 0; 
+  font-size:14px; 
+  line-height:1.7;
+  position:relative;
+}
 .ejemplo-box strong { color:var(--blue); }
-.tip-box { background:#FFF8E1; border-radius:var(--radius-md); padding:1rem 1.25rem; margin-top:1.25rem; font-size:14px; color:#5D4037; display:flex; gap:.75rem; align-items:flex-start; }
+
+.actividad-box {
+  background:#E3F2FD; 
+  border-left:4px solid var(--blue); 
+  border-radius:0 var(--radius-md) var(--radius-md) 0; 
+  padding:1.2rem 1.4rem; 
+  margin:1.5rem 0; 
+  font-size:14px; 
+  line-height:1.7;
+}
+.actividad-box strong { color:var(--blue); }
+
+.faq-item {
+  background:#FFF9C4; 
+  border-left:4px solid #FBC02D; 
+  border-radius:0 var(--radius-md) var(--radius-md) 0; 
+  padding:1.2rem 1.4rem; 
+  margin:1rem 0; 
+  font-size:14px; 
+  line-height:1.6;
+}
+.faq-item strong { color:#F57F17; }
+
+.tip-box { 
+  background:#FFF8E1; 
+  border-radius:var(--radius-md); 
+  padding:1.2rem 1.4rem; 
+  margin:1.5rem 0; 
+  font-size:14px; 
+  color:#5D4037; 
+  display:flex; 
+  gap:0.75rem; 
+  align-items:flex-start;
+}
 .tip-icon { font-size:22px; flex-shrink:0; }
-.cta-row { display:flex; gap:1rem; flex-wrap:wrap; margin-top:2rem; }
+
+.resumen-box {
+  background:#E8F5E9;
+  border:2px solid #4CAF50;
+  border-radius:var(--radius-md);
+  padding:1.5rem;
+  margin:1.5rem 0;
+  font-size:15px;
+  color:#1B5E20;
+}
+.resumen-box strong { color:#2E7D32; }
+
+/* ── Controles ── */
+.cta-row { 
+  display:flex; 
+  gap:1rem; 
+  flex-wrap:wrap; 
+  margin-top:2rem; 
+}
+
+/* ── Responsive ── */
+@media (max-width:640px) {
+  .leccion-wrap { max-width:100%; padding:0 1rem; }
+  .leccion-section { padding:1.5rem; }
+  .leccion-header { padding:1.5rem; }
+  .leccion-header h1 { font-size:18px; }
+}
 </style>
 {% endblock %}
 
@@ -36,26 +158,79 @@
     <p style="font-size:13px;opacity:.85;margin-top:.3rem;">{{ nivel.descripcion }}</p>
   </div>
 
-  <div class="leccion-body">
+  <!-- ── Video educativo ── -->
+  {% if leccion.video_file %}
+  <div>
+    <span class="video-label">📹 Mira este video</span>
+    <div class="video-container">
+      <video controls>
+        <source src="{{ leccion.video_file.url }}" type="video/mp4">
+        Tu navegador no soporta video HTML5.
+      </video>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ── Sección principal de contenido ── -->
+  <div class="leccion-section">
+    <h2>🎓 Explicación</h2>
     {% for parrafo in lineas %}
       {% if parrafo.strip %}<p>{{ parrafo }}</p>{% endif %}
     {% endfor %}
-
-    {% if leccion.ejemplo %}
-    <div class="ejemplo-box">
-      <strong>📝 Ejemplo:</strong><br>
-      {{ leccion.ejemplo }}
-    </div>
-    {% endif %}
-
-    {% if leccion.tip %}
-    <div class="tip-box">
-      <span class="tip-icon">💡</span>
-      <span>{{ leccion.tip }}</span>
-    </div>
-    {% endif %}
   </div>
 
+  <!-- ── Ejemplo ── -->
+  {% if leccion.ejemplo %}
+  <div class="leccion-section">
+    <h2>📝 Ejemplo práctico</h2>
+    <div class="ejemplo-box">
+      {{ leccion.ejemplo }}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ── Tip memorable ── -->
+  {% if leccion.tip %}
+  <div class="tip-box">
+    <span class="tip-icon">💡</span>
+    <span><strong>Recuerda:</strong> {{ leccion.tip }}</span>
+  </div>
+  {% endif %}
+
+  <!-- ── Mini actividades sugeridas ── -->
+  {% if leccion.actividades %}
+  <div class="leccion-section">
+    <h2>⚡ Mini-actividades sugeridas</h2>
+    <div class="actividad-box">
+      {{ leccion.actividades|safe }}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ── Preguntas frecuentes ── -->
+  {% if leccion.faq %}
+  <div class="leccion-section">
+    <h2>❓ Preguntas frecuentes</h2>
+    <div class="faq-item">
+      {{ leccion.faq|safe }}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- ── Resumen ── -->
+  <div class="leccion-section">
+    <h2>🧠 Resumen</h2>
+    <div class="resumen-box">
+      <p><strong>En este nivel aprendiste:</strong></p>
+      <ul style="margin-left: 1.5rem; margin-top: 0.7rem;">
+        <li>{{ nivel.descripcion }}</li>
+        <li>Conceptos clave para resolver problemas</li>
+        <li>Ejemplos prácticos del mundo real</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── Botones de acción ── -->
   <div class="cta-row">
     <a href="{% url 'competencias:quiz' comp.slug nivel.numero %}" class="btn-kid btn-kid-green">
       ¡Empezar el quiz! →
@@ -67,7 +242,7 @@
 
   {% if resultado and resultado.completado %}
   <p style="margin-top:1rem;font-size:13px;color:var(--text-muted);">
-    Ya completaste este nivel con <strong>{{ resultado.correctas }}/{{ resultado.total }}</strong> correctas.
+    ✓ Ya completaste este nivel con <strong>{{ resultado.correctas }}/{{ resultado.total }}</strong> correctas.
     Puedes repetirlo para mejorar tu puntaje.
   </p>
   {% endif %}

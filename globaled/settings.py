@@ -75,11 +75,18 @@ TIME_ZONE     = 'America/Bogota'
 USE_I18N      = True
 USE_TZ        = True
 
+# ── ENCODING UTF-8 ──
+DEFAULT_CHARSET = 'utf-8'
+FILE_CHARSET = 'utf-8'
+
 STATIC_URL  = '/static/'
 STATICFILES_DIRS = [
     BASE_DIR / "core" / "static"
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL   = '/media/'
+MEDIA_ROOT  = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
