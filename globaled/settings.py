@@ -92,8 +92,9 @@ MEDIA_ROOT  = BASE_DIR / 'media'
 
 CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL', 'cloudinary://649355296422886:RTHChP8mCqRZmkt2FU1nmDawj8o@dysab8vmt')
 
+# Configurar Cloudinary inmediatamente si hay URL
 if CLOUDINARY_URL:
-    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.VideoMediaCloudinaryStorage'
     CLOUDINARY_STORAGE = {
         'CLOUD_NAME': 'dysab8vmt',
         'API_KEY': '649355296422886',
@@ -101,6 +102,29 @@ if CLOUDINARY_URL:
         'MEDIA_TAGS': ['globaled'],
         'FOLDER': 'globaled',
     }
+else:
+    # Fallback a almacenamiento local
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+# Función para configurar storage después de que Django esté listo
+def configure_cloudinary_storage():
+    """Configura Cloudinary storage después de que Django esté inicializado"""
+    if CLOUDINARY_URL:
+        try:
+            from django.core.files.storage import default_storage
+            from cloudinary_storage.storage import VideoMediaCloudinaryStorage
+            
+            # Forzar el uso del storage de Cloudinary
+            if not isinstance(default_storage._wrapped, VideoMediaCloudinaryStorage):
+                default_storage._wrapped = VideoMediaCloudinaryStorage()
+                print("✓ Cloudinary VideoMedia storage configurado correctamente")
+        except Exception as e:
+            print(f"✗ Error configurando Cloudinary storage: {e}")
+
+# Configurar storage si Django ya está inicializado
+import django
+if django.apps.apps.ready:
+    configure_cloudinary_storage()
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
