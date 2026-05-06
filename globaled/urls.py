@@ -9,6 +9,7 @@ urlpatterns = [
     path('competencias/', include('competencias.urls')),
 ]
 
-# Servir media en desarrollo
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# Servir archivos media en producción y en desarrollo.
+# En Render esto permite que los videos dentro de media/ sean accesibles
+# siempre que los archivos estén desplegados junto a la app.
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

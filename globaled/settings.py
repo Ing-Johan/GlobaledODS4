@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,6 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary_storage',
     'core',
     'competencias',
 ]
@@ -87,6 +89,18 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL   = '/media/'
 MEDIA_ROOT  = BASE_DIR / 'media'
+
+CLOUDINARY_URL = os.environ.get('CLOUDINARY_URL', 'cloudinary://649355296422886:RTHChP8mCqRZmkt2FU1nmDawj8o@dysab8vmt')
+
+if CLOUDINARY_URL:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {
+        'CLOUD_NAME': 'dysab8vmt',
+        'API_KEY': '649355296422886',
+        'API_SECRET': 'RTHChP8mCqRZmkt2FU1nmDawj8o',
+        'MEDIA_TAGS': ['globaled'],
+        'FOLDER': 'globaled',
+    }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
