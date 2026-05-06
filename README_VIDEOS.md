@@ -19,20 +19,20 @@ Los videos funcionaban en local pero no en Render porque:
 - `upload_videos_cloudinary.py`: Script de migración
 - `test_videos.py`: Script de diagnóstico
 
-## Estado Actual
+## Estado Actual - ✅ COMPLETADO
 - ✅ **Configuración completa**: Cloudinary configurado con credenciales
-- ✅ **20 videos subidos**: Todos los videos migrados a Cloudinary exitosamente
+- ✅ **20 videos nuevos subidos**: Todos los videos actualizados migrados a Cloudinary exitosamente
 - ✅ **URLs de media**: Sirven en producción y desarrollo
 - ✅ **Almacenamiento escalable**: Listo para producción
-- ✅ **Videos funcionando**: Todos los videos accesibles via Cloudinary URLs
+- ✅ **Videos funcionando**: Todos los videos nuevos accesibles via Cloudinary URLs
 
-## Videos Subidos (20/20)
-- ✅ Razonamiento Cuantitativo: 5 videos (6.5MB - 38.3MB)
-- ✅ Lectura Crítica: 5 videos (URLs Cloudinary activas)
-- ✅ Competencia Ciudadana: 5 videos (URLs Cloudinary activas)
-- ✅ Ciencias Naturales: 5 videos (URLs Cloudinary activas)
+## Videos Actualizados y Subidos (20/20)
+- ✅ Razonamiento Cuantitativo: 5 videos nuevos (nivel_1.mp4 - nivel_5.mp4)
+- ✅ Lectura Crítica: 5 videos nuevos (nivel_6.mp4 - nivel_10.mp4)
+- ✅ Competencia Ciudadana: 5 videos nuevos (nivel_11.mp4 - nivel_15.mp4)
+- ✅ Ciencias Naturales: 5 videos nuevos (nivel_16.mp4 - nivel_20.mp4)
 
-Todas las URLs apuntan a: `https://res.cloudinary.com/dysab8vmt/video/upload/v1/...`
+Todas las URLs apuntan a: `https://res.cloudinary.com/dysab8vmt/video/upload/v1/media/videos/2026/05/...`
 
 ## Credenciales Configuradas
 - Cloud Name: `dysab8vmt`
@@ -41,13 +41,29 @@ Todas las URLs apuntan a: `https://res.cloudinary.com/dysab8vmt/video/upload/v1/
 
 ## Pasos para Producción
 
-### ✅ COMPLETADO - Videos ya subidos a Cloudinary
-Los 20 videos ya están migrados y funcionando. Solo necesitas:
+### ✅ COMPLETADO - Videos nuevos ya subidos a Cloudinary
+Los 20 videos nuevos ya están migrados y funcionando. Solo necesitas:
 
-### 1. Configurar en Render (único paso pendiente)
-Ve a tu proyecto en Render → Environment → Environment Variables y agrega:
-```
-CLOUDINARY_URL=cloudinary://649355296422886:RTHChP8mCqRZmkt2FU1nmDawj8o@dysab8vmt
+### 1. Hacer Deploy a Render
+Los cambios en la base de datos ya están aplicados. Solo necesitas hacer push a Git y deploy en Render.
+
+### 2. Verificar en Producción
+Ve a https://globaledods4.onrender.com y verifica que:
+- Los videos de lectura crítica muestren contenido nuevo
+- Los videos de competencia ciudadana muestren contenido nuevo
+- Los videos de ciencias naturales muestren contenido nuevo
+- Los videos de razonamiento cuantitativo sigan funcionando
+
+## Cambios Realizados
+1. **Actualización de contenido**: Reemplazados videos antiguos con contenido nuevo
+2. **Mapeo correcto**: Videos asignados correctamente por competencia y nivel
+3. **Subida a Cloudinary**: Todos los videos nuevos subidos automáticamente
+4. **Base de datos actualizada**: Rutas apuntan a videos correctos
+
+## Notas Técnicas
+- Los videos se suben automáticamente a Cloudinary cuando se asignan rutas locales
+- Las URLs incluyen sufijos únicos de Cloudinary para cache busting
+- El almacenamiento es escalable y no depende del disco de Render
 ```
 
 ### 2. Desplegar cambios
