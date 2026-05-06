@@ -21,9 +21,18 @@ Los videos funcionaban en local pero no en Render porque:
 
 ## Estado Actual
 - ✅ **Configuración completa**: Cloudinary configurado con credenciales
-- ✅ **20 videos subidos**: Todos los videos migrados a Cloudinary
+- ✅ **20 videos subidos**: Todos los videos migrados a Cloudinary exitosamente
 - ✅ **URLs de media**: Sirven en producción y desarrollo
 - ✅ **Almacenamiento escalable**: Listo para producción
+- ✅ **Videos funcionando**: Todos los videos accesibles via Cloudinary URLs
+
+## Videos Subidos (20/20)
+- ✅ Razonamiento Cuantitativo: 5 videos (6.5MB - 38.3MB)
+- ✅ Lectura Crítica: 5 videos (URLs Cloudinary activas)
+- ✅ Competencia Ciudadana: 5 videos (URLs Cloudinary activas)
+- ✅ Ciencias Naturales: 5 videos (URLs Cloudinary activas)
+
+Todas las URLs apuntan a: `https://res.cloudinary.com/dysab8vmt/video/upload/v1/...`
 
 ## Credenciales Configuradas
 - Cloud Name: `dysab8vmt`
@@ -48,6 +57,7 @@ CLOUDINARY_URL=cloudinary://649355296422886:RTHChP8mCqRZmkt2FU1nmDawj8o@dysab8vm
 
 ### 3. Verificación
 - Los videos se cargarán desde Cloudinary
+- URLs como: `https://res.cloudinary.com/dysab8vmt/video/upload/v1/media/videos/2026/05/nivel_1_aijmmq`
 - URLs como `/media/videos/2026/05/...` funcionarán
 - Mejor rendimiento con CDN global
 
