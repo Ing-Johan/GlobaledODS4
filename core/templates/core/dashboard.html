@@ -4,32 +4,92 @@
 {% load static %}
 
 <style>
-.stat-row { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: .9rem; margin-bottom: 1.5rem; }
-.stat-box { background: var(--white); border-radius: var(--radius-md); padding: 1rem 1.1rem; box-shadow: var(--shadow-sm); }
-.stat-n { font-size: 24px; font-weight: 700; color: var(--blue); }
-.stat-l { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-.dash-card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 1.5rem; }
-.dash-card.full { grid-column: 1 / -1; }
-.q-links { display: flex; flex-direction: column; gap: .75rem; }
-.q-link { display: flex; align-items: center; gap: 12px; background: var(--bg-soft); border-radius: var(--radius-md); padding: .9rem 1.1rem; font-size: 14px; font-weight: 600; color: var(--blue); transition: background .2s; }
-.q-link:hover { background: var(--blue-light); }
-.q-link-icon { width: 36px; height: 36px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.q-link-icon svg { width: 20px; height: 20px; fill: var(--white); }
-.bar-vis { display: flex; align-items: flex-end; gap: 7px; height: 110px; padding: 0 .5rem; }
-.bar-vis span { flex: 1; border-radius: 6px 6px 0 0; background: var(--blue); min-width: 14px; }
+* { box-sizing: border-box; }
+
+/* ── DASHBOARD MODERNO ── */
+.dash { padding: 1.5rem 0; }
+.dash-header { display: flex; align-items: center; gap: 12px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.dash-badge { background: #1D9E75; color: #fff; font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .05em; }
+.dash-title { font-size: 20px; font-weight: 500; }
+.dash-subtitle { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+
+/* KPI GRID */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+.kpi { background: var(--white); border-radius: var(--radius-md); padding: 0.9rem 1rem; box-shadow: var(--shadow-sm); transition: transform .2s, box-shadow .2s; }
+.kpi:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(21,101,192,.12); }
+.kpi-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; font-weight: 600; }
+.kpi-val { font-size: 22px; font-weight: 500; color: var(--blue); }
+.kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+.kpi-val.green { color: #1D9E75; }
+.kpi-val.amber { color: #BA7517; }
+.kpi-val.red { color: #A32D2D; }
+
+/* HERO PUNTAJE */
+.puntaje-hero { 
+  background: linear-gradient(135deg, var(--blue) 0%, #0D47A1 100%); 
+  color: var(--white); 
+  border-radius: var(--radius-md); 
+  padding: 1.5rem; 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 1.5rem;
+  box-shadow: 0 8px 24px rgba(21,101,192,.15);
+}
+.puntaje-hero .pn { font-size: 28px; font-weight: 700; }
+.puntaje-hero .pl { font-size: 12px; opacity: .9; }
+
+/* CHARTS & CARDS */
+.charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+.card { background: var(--white); border: 0.5px solid #D8ECD8; border-radius: var(--radius-lg); padding: 1rem 1.25rem; box-shadow: var(--shadow-sm); }
+.card-title { font-size: 13px; font-weight: 500; margin-bottom: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+
+.bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.bar-label { font-size: 12px; color: var(--text-muted); width: 90px; text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+.bar-bg { flex: 1; background: var(--bg-soft); border-radius: 4px; height: 16px; overflow: hidden; }
+.bar-fill { height: 16px; border-radius: 4px; transition: width .3s; }
+.bar-pct { font-size: 12px; font-weight: 500; min-width: 36px; }
+
+/* RESULTADOS */
+.results-section { margin-bottom: 1.5rem; }
 .results-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.results-table th { text-align: left; color: var(--text-muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid #D8ECD8; }
-.results-table td { padding: 9px 8px; border-bottom: 1px solid #EEF5E5; }
-.badge-pct { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.results-table th { text-align: left; color: var(--text-muted); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid #D8ECD8; background: var(--bg-soft); }
+.results-table td { padding: 10px; border-bottom: 1px solid #EEF5E5; }
+.results-table tr:hover { background: var(--bg-soft); }
+.badge-pct { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
 .bg-green { background: #E8F5E9; color: #2E7D32; }
 .bg-amber { background: #FFF8E1; color: #E65100; }
-.bg-red   { background: #FFEBEE; color: var(--danger); }
-.puntaje-hero { background: linear-gradient(90deg, var(--blue) 0%, var(--blue-dark) 100%); color: var(--white); border-radius: var(--radius-md); padding: .75rem 1.25rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-.puntaje-hero .pn { font-size: 28px; font-weight: 700; }
-.puntaje-hero .pl { font-size: 12px; opacity: .82; }
-@media(max-width: 700px) { .stat-row { grid-template-columns: 1fr 1fr; } .dash-grid { grid-template-columns: 1fr; } .dash-card.full { grid-column: 1; } }
-@media(max-width: 400px) { .stat-row { grid-template-columns: 1fr; } }
+.bg-red { background: #FFEBEE; color: var(--danger); }
+
+/* EXPLORACIÓN */
+.explore-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+.explore-card { background: var(--white); border-radius: var(--radius-md); padding: 1.25rem; box-shadow: var(--shadow-sm); text-align: center; transition: transform .2s, box-shadow .2s; }
+.explore-card:hover { transform: translateY(-4px); box-shadow: 0 6px 20px rgba(21,101,192,.15); }
+.explore-icon { font-size: 32px; margin-bottom: .5rem; }
+.explore-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: .25rem; }
+.explore-desc { font-size: 12px; color: var(--text-muted); margin-bottom: 1rem; }
+.explore-btn { display: inline-block; padding: 8px 16px; background: var(--blue); color: #fff; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; transition: opacity .2s; }
+.explore-btn:hover { opacity: .88; }
+
+/* MAPA */
+#worldMap { height: 400px; }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .kpi-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .charts-row { grid-template-columns: 1fr; }
+  .explore-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .puntaje-hero { flex-direction: column; text-align: center; }
+  .explore-grid { grid-template-columns: 1fr; }
+  .dash-header { justify-content: center; text-align: center; }
+  #worldMap { height: 300px !important; }
+  #mapLegend { font-size: 10px; }
+  #mapLegend span { margin-right: 8px !important; }
+}
 </style>
 {% endblock %}
 {% block navbar %}
@@ -56,80 +116,396 @@
 {% endblock %}
 {% block content %}
 <div class="page-main">
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:1.25rem;">
-    <div>
-      <h1 style="font-size:21px;font-weight:700;">Hola, {{ request.user.username }} 👋</h1>
-      <p class="text-muted">Aquí tienes un resumen de tu actividad en GlobalEd.</p>
-    </div>
-  </div>
-  <div class="puntaje-hero">
-    <div><div class="pn">{{ puntaje }}</div><div class="pl">puntos acumulados</div></div>
-    <svg viewBox="0 0 24 24" style="width:36px;height:36px;fill:rgba(255,255,255,.3);"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-  </div>
-  <div class="stat-row">
-    <div class="stat-box"><div class="stat-n">272M</div><div class="stat-l">Niños sin escolarizar</div></div>
-    <div class="stat-box"><div class="stat-n">86.3%</div><div class="stat-l">Alfabetización global</div></div>
-    <div class="stat-box"><div class="stat-n">80%</div><div class="stat-l">Países con metas ODS4</div></div>
-    <div class="stat-box"><div class="stat-n">2030</div><div class="stat-l">Meta de cumplimiento</div></div>
-  </div>
-  <div class="dash-grid">
-    <div class="dash-card">
-      <div class="section-label">Escolarización primaria global (2015–2025)</div>
-      <div style="background:var(--bg-soft);border-radius:var(--radius-md);padding:1rem;">
-        <div class="bar-vis">
-          <span style="height:55%;opacity:.45;"></span>
-          <span style="height:62%;opacity:.52;"></span>
-          <span style="height:68%;opacity:.60;"></span>
-          <span style="height:66%;opacity:.65;"></span>
-          <span style="height:73%;opacity:.72;"></span>
-          <span style="height:76%;opacity:.80;"></span>
-          <span style="height:80%;opacity:.88;"></span>
-          <span style="height:82%;"></span>
+  <div class="dash">
+    <!-- HEADER -->
+    <div class="dash-header">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+          <span class="dash-badge">ODS 4</span>
+          <h1 class="dash-title">Educación de Calidad — Mi Progreso</h1>
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:6px;padding:0 .5rem;">
-          <span>2015</span><span>2017</span><span>2019</span><span>2021</span><span>2023</span><span>2025</span>
-        </div>
+        <div class="dash-subtitle">Agenda 2030 · Plataforma de Aprendizaje GlobalEd</div>
       </div>
     </div>
-    <div class="dash-card">
-      <div class="section-label">Explorar contenido</div>
-      <div class="q-links">
-        <a href="{% url 'explorar' %}" class="q-link">
-          <div class="q-link-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></div>
-          ¿Qué es el ODS 4?
-        </a>
-        <a href="{% url 'metas' %}" class="q-link">
-          <div class="q-link-icon"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg></div>
-          Metas Agenda 2030
-        </a>
-        <a href="{% url 'tests' %}" class="q-link">
-          <div class="q-link-icon"><svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14l4-4h12c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg></div>
-          Tests interactivos
-        </a>
+
+    <!-- HERO PUNTAJE -->
+    <div class="puntaje-hero">
+      <div>
+        <div class="pn">{{ puntaje }}</div>
+        <div class="pl">Puntos acumulados</div>
+      </div>
+      <svg viewBox="0 0 24 24" style="width:36px;height:36px;fill:rgba(255,255,255,.3);"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    </div>
+
+    <!-- KPI GRID -->
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="kpi-label">Niños sin escolarizar</div>
+        <div class="kpi-val red">272M</div>
+        <div class="kpi-sub">Estimación 2023</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Alfabetización global</div>
+        <div class="kpi-val green">86.3%</div>
+        <div class="kpi-sub">Mayores de 15 años</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Países con metas ODS4</div>
+        <div class="kpi-val green">80%</div>
+        <div class="kpi-sub">164 de 193 países</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Meta de cumplimiento</div>
+        <div class="kpi-val amber">2030</div>
+        <div class="kpi-sub">Agenda de la ONU</div>
       </div>
     </div>
-    <div class="dash-card full">
-      <div class="section-label">Mis últimos resultados</div>
+
+    <!-- MAPS & CHARTS -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <div class="card-title">🌍 Tasa de alfabetización adulta por país (2025)</div>
+      <div id="worldMap" style="width:100%;overflow:hidden;border-radius:8px;"></div>
+      <div class="legend" id="mapLegend"></div>
+    </div>
+
+    <!-- CHARTS ROW -->
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-title">🌍 Países líderes en educación</div>
+        <div id="topCountries"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📉 Mayores brechas educativas</div>
+        <div id="bottomCountries"></div>
+      </div>
+    </div>
+
+    <!-- GASTO EN EDUCACIÓN -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="card-title">💰 Gasto público en educación (% del PIB)</div>
+      <div style="position:relative;width:100%;height:280px;"><canvas id="spendChart"></canvas></div>
+    </div>
+
+    <!-- PROGRESO ODS 4 -->
+    <div class="card" style="margin-bottom:1.5rem;">
+      <div class="card-title">📈 Evolución del progreso hacia ODS 4</div>
+      <div style="position:relative;width:100%;height:280px;"><canvas id="progressChart"></canvas></div>
+      <div id="progressLegend" style="margin-top: 1rem;"></div>
+    </div>
+
+    <!-- MIS RESULTADOS -->
+    <div class="card results-section">
+      <div class="card-title">📊 Tus últimos resultados</div>
       {% if resultados %}
-      <table class="results-table">
-        <thead><tr><th>Categoría</th><th>Correctas</th><th>Total</th><th>Puntaje</th><th>Fecha</th></tr></thead>
-        <tbody>
-          {% for r in resultados %}
-          <tr>
-            <td>{{ r.categoria }}</td>
-            <td>{{ r.correctas }}</td>
-            <td>{{ r.total }}</td>
-            <td><span class="badge-pct {% if r.porcentaje >= 70 %}bg-green{% elif r.porcentaje >= 40 %}bg-amber{% else %}bg-red{% endif %}">{{ r.porcentaje }}%</span></td>
-            <td style="color:var(--text-muted);">{{ r.fecha|date:"d M Y" }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+      <div style="overflow-x: auto;">
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Competencia</th>
+              <th>Correctas</th>
+              <th>Total</th>
+              <th>Puntaje</th>
+              <th>Fecha</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in resultados %}
+            <tr>
+              <td style="font-weight: 500;">{{ r.categoria }}</td>
+              <td style="text-align: center;">{{ r.correctas }}</td>
+              <td style="text-align: center;">{{ r.total }}</td>
+              <td><span class="badge-pct {% if r.porcentaje >= 70 %}bg-green{% elif r.porcentaje >= 40 %}bg-amber{% else %}bg-red{% endif %}">{{ r.porcentaje }}%</span></td>
+              <td style="color:var(--text-muted);font-size:12px;">{{ r.fecha|date:"d M Y" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
       {% else %}
-      <p class="text-muted" style="padding:.75rem 0;">Aún no has completado ningún test.</p>
-      <a href="{% url 'tests' %}" class="btn btn-primary" style="max-width:200px;margin-top:.75rem;">Ir a los tests</a>
+      <p class="text-muted" style="padding:1rem 0;text-align:center;">📚 Aún no has completado ningún test. ¡Comienza ahora!</p>
+      <div style="text-align: center; margin-top: 1rem;">
+        <a href="{% url 'tests' %}" class="btn btn-primary" style="max-width:200px;display:inline-block;">Ir a los tests</a>
+      </div>
       {% endif %}
+    </div>
+
+    <!-- EXPLORACIÓN -->
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <div class="card-title">🚀 Explorar tu aprendizaje</div>
+      <div class="explore-grid">
+        <div class="explore-card">
+          <div class="explore-icon">📚</div>
+          <div class="explore-title">¿Qué es el ODS 4?</div>
+          <div class="explore-desc">Descubre los objetivos de educación de calidad en la Agenda 2030</div>
+          <a href="{% url 'explorar' %}" class="explore-btn">Aprender más</a>
+        </div>
+        <div class="explore-card">
+          <div class="explore-icon">✅</div>
+          <div class="explore-title">Metas Agenda 2030</div>
+          <div class="explore-desc">Conoce las 10 metas específicas del ODS 4</div>
+          <a href="{% url 'metas' %}" class="explore-btn">Ver metas</a>
+        </div>
+        <div class="explore-card">
+          <div class="explore-icon">🧠</div>
+          <div class="explore-title">Tests Interactivos</div>
+          <div class="explore-desc">Pon a prueba tus conocimientos en 4 competencias</div>
+          <a href="{% url 'competencias:lista' %}" class="explore-btn">Empezar tests</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="dash-footer">
+      ✨ Fuentes: UNESCO Instituto de Estadística · Informe GEM 2025 · Banco Mundial · PNUD · Pacto Global ONU
     </div>
   </div>
 </div>
+
+<!-- LIBRERÍAS GRÁFICAS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+
+<script>
+// ── DATOS DE ALFABETIZACIÓN GLOBAL ──
+const literacyData = {
+  4:100,8:100,12:100,20:38,24:100,32:99.1,36:99,40:99.8,
+  50:97.4,56:99,64:74.9,68:92.5,76:94.2,100:98.5,104:89.1,
+  116:83.8,120:77.1,124:99,152:96.4,156:97.2,170:95.1,178:79.8,
+  188:97.9,192:99.8,218:94.5,818:73.1,222:88.5,231:52.1,
+  246:100,250:99,276:99,288:79.0,300:97.9,320:81.3,332:61.7,
+  340:87.2,356:74.4,360:96.0,364:88.7,368:85.7,372:99,376:97.8,
+  380:99,388:88.7,392:99,400:98.4,404:81.5,410:99,408:100,
+  414:96.3,418:84.7,422:95.1,430:48.3,504:73.8,484:95.3,
+  516:92.3,524:68.5,528:99,566:62.0,578:100,586:58.0,
+  604:94.5,608:98.2,616:99.8,620:95.7,634:93.5,630:92,
+  642:98.8,643:99.7,682:97.6,686:51.9,694:48.6,706:37.8,
+  724:98.3,729:61.0,752:99,756:99,760:86.4,764:94.1,
+  788:79.9,792:96.7,800:79.0,804:99.9,784:97.3,826:99,
+  840:99,858:98.7,860:100,704:96.1,887:64.1,710:95.0,
+  716:88.7,894:63.4,144:92.3,591:95.4,780:99
+};
+
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const colorScale = d3.scaleThreshold(
+  [40,60,75,85,95,99],
+  isDark
+    ? ['#501313','#A32D2D','#BA7517','#854F0B','#0F6E56','#1D9E75','#9FE1CB']
+    : ['#FCEBEB','#F09595','#FAC775','#EF9F27','#9FE1CB','#1D9E75','#085041']
+);
+
+const legendLabels = ['< 40%','40–60%','60–75%','75–85%','85–95%','95–99%','≥ 99%'];
+const legendColors = isDark
+  ? ['#501313','#A32D2D','#BA7517','#854F0B','#0F6E56','#1D9E75','#9FE1CB']
+  : ['#FCEBEB','#F09595','#FAC775','#EF9F27','#9FE1CB','#1D9E75','#085041'];
+
+// Renderizar leyenda
+const legEl = document.getElementById('mapLegend');
+if (legEl) {
+  legEl.innerHTML = '';
+  legendColors.forEach((c,i) => {
+    legEl.innerHTML += `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px;font-size:11px;color:var(--text-muted);"><span style="width:12px;height:12px;border-radius:2px;background:${c};border:0.5px solid ${isDark?'rgba(255,255,255,.1)':'rgba(0,0,0,.1)'}"></span>${legendLabels[i]}</span>`;
+  });
+}
+
+// Mapa D3.js
+const mapEl = document.getElementById('worldMap');
+if (mapEl) {
+  const mapW = mapEl.offsetWidth || 900;
+  const mapH = window.innerWidth <= 600 ? 300 : 400;
+  const svg = d3.select('#worldMap').append('svg')
+    .attr('viewBox',`0 0 ${mapW} ${Math.round(mapW*0.5)}`)
+    .attr('width','100%')
+    .attr('height','100%')
+    .attr('style','background:#ffffff;');
+
+  const proj = d3.geoNaturalEarth1().scale(mapW/6.5).translate([mapW/2,mapW*0.25]);
+  const path = d3.geoPath(proj);
+
+  const tooltip = d3.select('body').append('div')
+    .style('position','fixed')
+    .style('background',isDark?'#2C2C2A':'#fff')
+    .style('border','0.5px solid rgba(0,0,0,.15)')
+    .style('border-radius','6px')
+    .style('padding','6px 10px')
+    .style('font-size','12px')
+    .style('pointer-events','none')
+    .style('opacity',0)
+    .style('z-index','999')
+    .style('color',isDark?'#fff':'#222');
+
+  d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(world => {
+    const features = topojson.feature(world, world.objects.countries).features
+      .filter(d => d.id !== '010'); // Excluir Antártida
+    svg.selectAll('path').data(features).join('path')
+      .attr('d', path)
+      .attr('fill', d => {
+        const v = literacyData[+d.id];
+        return v != null ? colorScale(v) : (isDark ? '#3A3A38' : '#E8E8E8');
+      })
+      .attr('stroke', isDark ? 'rgba(255,255,255,.08)' : 'rgba(255,255,255,.6)')
+      .attr('stroke-width', 0.4)
+      .on('mousemove', (e,d) => {
+        const v = literacyData[+d.id];
+        tooltip.style('opacity',1)
+          .html(v!=null ? `<b>País ID ${d.id}</b>: ${v}% alfabetización` : `<b>País ID ${d.id}</b>: sin datos`)
+          .style('left', (e.clientX+12)+'px')
+          .style('top', (e.clientY-28)+'px');
+      })
+      .on('mouseleave', () => tooltip.style('opacity',0));
+  });
+}
+
+// ── GRÁFICAS DE BARRAS: TOP COUNTRIES Y BOTTOM COUNTRIES ──
+const topData = [
+  {name:'Finlandia',val:100},{name:'Noruega',val:100},
+  {name:'Luxemburgo',val:100},{name:'Canadá',val:99},
+  {name:'Japón',val:99},{name:'Alemania',val:99},
+  {name:'Australia',val:99},{name:'Corea del Sur',val:99},
+];
+
+const botData = [
+  {name:'Chad',val:27},{name:'Malí',val:31},
+  {name:'Sudán del Sur',val:34.5},{name:'Afganistán',val:37.3},
+  {name:'Níger',val:38},{name:'Sierra Leona',val:48.6},
+  {name:'Liberia',val:48.3},{name:'Etiopía',val:52.1},
+];
+
+function renderBars(id, data, color) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = '';
+  data.forEach(d => {
+    el.innerHTML += `<div class="bar-row">
+      <span class="bar-label">${d.name}</span>
+      <div class="bar-bg"><div class="bar-fill" style="width:${d.val}%;background:${color};"></div></div>
+      <span class="bar-pct">${d.val}%</span>
+    </div>`;
+  });
+}
+
+renderBars('topCountries', topData, '#1D9E75');
+renderBars('bottomCountries', botData, '#E24B4A');
+
+// ── GRÁFICA DE GASTO EN EDUCACIÓN ──
+const spendCtx = document.getElementById('spendChart');
+if (spendCtx) {
+  new Chart(spendCtx, {
+    type: 'bar',
+    data: {
+      labels: ['Noruega','Luxemburgo','Finlandia','Suecia','Francia','España','Brasil','Colombia','México','India','Pakistán','Chad'],
+      datasets: [{
+        label: '% del PIB en educación',
+        data: [7.7,7.1,6.2,6.0,5.5,4.3,6.1,4.5,4.2,4.5,2.4,1.9],
+        backgroundColor: '#1D9E75',
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 9,
+          ticks: {
+            callback: v => v+'%',
+            font: { size: 11 }
+          },
+          grid: {
+            color: isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)'
+          }
+        },
+        x: {
+          ticks: {
+            font: { size: 11 },
+            maxRotation: 45,
+            minRotation: 0
+          },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+}
+
+// ── GRÁFICA DE PROGRESO ODS 4 ──
+const progCtx = document.getElementById('progressChart');
+if (progCtx) {
+  new Chart(progCtx, {
+    type: 'line',
+    data: {
+      labels: ['2015','2017','2019','2021','2023','2025','2030 (meta)'],
+      datasets: [
+        {
+          label:'Escolarización primaria (%)',
+          data:[89,90,91,90,91,92,100],
+          borderColor:'#1D9E75',
+          backgroundColor:'rgba(29,158,117,.1)',
+          tension:0.4,
+          fill:true,
+          borderWidth: 2
+        },
+        {
+          label:'Competencia lectora mínima (%)',
+          data:[63,62,61,59,57,56,100],
+          borderColor:'#BA7517',
+          backgroundColor:'rgba(186,117,23,.08)',
+          tension:0.4,
+          fill:true,
+          borderDash:[5,3],
+          borderWidth: 2
+        },
+        {
+          label:'Alfabetización adulta global (%)',
+          data:[84,84.5,85,85.5,86,86.3,90],
+          borderColor:'#378ADD',
+          backgroundColor:'rgba(55,138,221,.07)',
+          tension:0.4,
+          fill:true,
+          borderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          min: 50,
+          max: 105,
+          ticks: {
+            callback: v => v+'%',
+            font: { size: 11 }
+          },
+          grid: {
+            color: isDark ? 'rgba(255,255,255,.06)' : 'rgba(0,0,0,.06)'
+          }
+        },
+        x: {
+          ticks: { font: { size: 11 } },
+          grid: { display: false }
+        }
+      }
+    }
+  });
+
+  // Leyenda personalizada
+  const legDiv = document.getElementById('progressLegend');
+  if (legDiv) {
+    legDiv.innerHTML = `
+      <span style="display:inline-flex;align-items:center;gap:5px;margin-right:16px;font-size:11px;color:var(--text-muted);"><span style="width:10px;height:10px;border-radius:2px;background:#1D9E75;"></span>Escolarización primaria</span>
+      <span style="display:inline-flex;align-items:center;gap:5px;margin-right:16px;font-size:11px;color:var(--text-muted);"><span style="width:10px;height:10px;border-radius:2px;background:#BA7517;"></span>Competencia lectora</span>
+      <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--text-muted);"><span style="width:10px;height:10px;border-radius:2px;background:#378ADD;"></span>Alfabetización adulta</span>
+    `;
+  }
+}
+</script>
 {% endblock %}

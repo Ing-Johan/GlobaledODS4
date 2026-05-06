@@ -179,6 +179,44 @@ img, video, iframe {
   .page-main  { padding: 1rem .75rem 2rem; }
   .page-auth  { padding: 1.25rem .75rem; }
 
+  /* ── QUIZ MÓVIL: mostrar siempre 4 opciones completas ── */
+  .quiz-wrap,
+  .pregunta-card,
+  .opciones,
+  .opcion-label,
+  .opcion-label span {
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .opciones {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.95rem !important;
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  .opcion-label {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 1rem 1rem !important;
+    min-height: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+  }
+
+  .opcion-label span {
+    display: block !important;
+    width: 100% !important;
+    flex: none !important;
+  }
+
   /* ── SPLASH ── */
   .splash-card { padding: 2rem 1.25rem; border-radius: 18px; }
   .splash-icon { width: 100px !important; height: 100px !important; }
