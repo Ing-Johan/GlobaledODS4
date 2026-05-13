@@ -1,1 +1,0 @@
-Contenido de prueba con Cloudinary pre-configurado - b'\xe0\xfd\xffE\xa1X3/'
